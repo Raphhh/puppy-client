@@ -15,6 +15,9 @@ class Client
      */
     private $entryPath;
 
+    /**
+     * @param string $entryPath
+     */
     public function __construct($entryPath)
     {
         $this->setEntryPath($entryPath);
