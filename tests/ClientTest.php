@@ -52,4 +52,12 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $link = $dom->filter('a')->eq(0);
         $this->assertSame('request-uri', $client->click($link)->text());
     }
+
+    public function testSubmit()
+    {
+        $client = new Client(__DIR__ . '/index.php');
+        $dom = $client->call('submit');
+        $form = $dom->filter('form')->eq(0);
+        $this->assertSame('value', $client->submit($form, ['key' => 'value'])->text());
+    }
 }

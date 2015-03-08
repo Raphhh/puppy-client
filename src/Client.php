@@ -56,6 +56,16 @@ class Client
     }
 
     /**
+     * @param Crawler $form
+     * @param array $values
+     * @return Crawler
+     */
+    public function submit(Crawler $form, array $values = array())
+    {
+        return $this->call($form->attr('action'), $form->attr('method'), $values);
+    }
+
+    /**
      * Getter of $entryPath
      *
      * @return string
@@ -74,5 +84,4 @@ class Client
     {
         $this->entryPath = (string)$entryPath;
     }
-
 }

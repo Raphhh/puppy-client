@@ -46,4 +46,11 @@ $puppy->any(
     }
 );
 
+$puppy->any(
+    'submit',
+    function(){
+        return '<div><form action="post" method="post"></form></div>';
+    }
+);
+
 $puppy->run();
