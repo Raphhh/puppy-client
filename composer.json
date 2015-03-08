@@ -1,0 +1,22 @@
+{
+    "name": "raphhh/puppy-client",
+    "description": "client to test puppy",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Puppy\\Client\\": [
+                "src/",
+                "tests/"
+            ]
+        }
+    },
+    "require": {
+        "php": ">=5.4",
+        "symfony/dom-crawler": "~2.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "@stable",
+        "raphhh/puppy-application": "@dev"
+    }
+}
