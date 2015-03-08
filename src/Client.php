@@ -30,17 +30,20 @@ class Client
     public function call($requestUri, $method='GET', array $post = array(), $accept = '')
     {
         $serverDump = $_SERVER;
+        $getDump = $_GET;
         $postDump = $_POST;
 
         $_SERVER['REQUEST_URI'] = $requestUri;
         $_SERVER['REQUEST_METHOD'] = strtoupper($method);
         $_SERVER['HTTP_ACCEPT'] = $accept;
+        parse_str(parse_url($requestUri, PHP_URL_QUERY), $_GET);
         $_POST = $post;
 
         ob_start();
         require $this->getEntryPath();
 
         $_SERVER = $serverDump;
+        $_GET = $getDump;
         $_POST = $postDump;
 
         return new Crawler(ob_get_clean());

@@ -31,6 +31,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('value', $dom->text());
     }
 
+    public function testCallWithGetValues()
+    {
+        $client = new Client(__DIR__ . '/index.php');
+        $dom = $client->call('post?key=value');
+        $this->assertSame('value', $dom->text());
+    }
+
     public function testCallWithDefaultType()
     {
         $client = new Client(__DIR__ . '/index.php');
