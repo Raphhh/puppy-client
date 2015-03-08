@@ -39,4 +39,11 @@ $puppy->any(
     }
 );
 
+$puppy->any(
+    'click',
+    function(){
+        return '<div><a href="request-uri">link</a></div>';
+    }
+);
+
 $puppy->run();

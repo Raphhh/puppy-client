@@ -44,4 +44,12 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $dom = $client->call('application-json', 'POST', [], 'application/json');
         $this->assertSame('application/json', $dom->text());
     }
+
+    public function testClick()
+    {
+        $client = new Client(__DIR__ . '/index.php');
+        $dom = $client->call('click');
+        $link = $dom->filter('a')->eq(0);
+        $this->assertSame('request-uri', $client->click($link)->text());
+    }
 }

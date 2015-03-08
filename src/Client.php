@@ -47,6 +47,15 @@ class Client
     }
 
     /**
+     * @param Crawler $link
+     * @return Crawler
+     */
+    public function click(Crawler $link)
+    {
+        return $this->call($link->attr('href'));
+    }
+
+    /**
      * Getter of $entryPath
      *
      * @return string
