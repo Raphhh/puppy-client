@@ -49,7 +49,12 @@ $puppy->any(
 $puppy->any(
     'submit',
     function(){
-        return '<div><form action="post" method="post"></form></div>';
+        return '<div>
+                    <form action="post" method="post">
+                        <input type="hidden" name="key" value="">
+                        <input type="submit" name="submit" value="submit">
+                    </form>
+                </div>';
     }
 );
 

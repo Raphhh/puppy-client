@@ -2,6 +2,8 @@
 namespace Puppy\Client;
 
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\DomCrawler\Form;
+use Symfony\Component\DomCrawler\Link;
 
 /**
  * Class Client
@@ -16,16 +18,23 @@ class Client
     private $entryPath;
 
     /**
+     * @var string
+     */
+    private $baseUri;
+
+    /**
      * @var array
      */
     private $cookies = [];
 
     /**
      * @param string $entryPath
+     * @param string $baseUri
      */
-    public function __construct($entryPath)
+    public function __construct($entryPath, $baseUri = 'http://website.dev')
     {
         $this->setEntryPath($entryPath);
+        $this->setBaseUri($baseUri);
     }
 
     /**
@@ -57,26 +66,27 @@ class Client
         $_POST = $postDump;
         $_COOKIE = $cookieDump;
 
-        return new Response(ob_get_clean());
+        return new Response($this, ob_get_clean());
     }
 
     /**
-     * @param Crawler $link
+     * @param Link $link
      * @return Response
      */
-    public function click(Crawler $link)
+    public function click(Link $link)
     {
-        return $this->call($link->attr('href'));
+        return $this->call($link->getUri());
     }
 
     /**
-     * @param Crawler $form
+     * @param Form $form
      * @param array $values
      * @return Response
      */
-    public function submit(Crawler $form, array $values = array())
+    public function submit(Form $form, array $values = array())
     {
-        return $this->call($form->attr('action'), $form->attr('method'), $values);
+        $form->setValues($values);
+        return $this->call($form->getUri(), $form->getMethod(), $form->getPhpValues());
     }
 
     /**
@@ -87,6 +97,16 @@ class Client
     public function getEntryPath()
     {
         return $this->entryPath;
+    }
+
+    /**
+     * Getter of $baseUri
+     *
+     * @return string
+     */
+    public function getBaseUri()
+    {
+        return $this->baseUri;
     }
 
     /**
@@ -117,5 +137,15 @@ class Client
     private function setEntryPath($entryPath)
     {
         $this->entryPath = (string)$entryPath;
+    }
+
+    /**
+     * Setter of $baseUri
+     *
+     * @param string $baseUri
+     */
+    private function setBaseUri($baseUri)
+    {
+        $this->baseUri = (string)$baseUri;
     }
 }
