@@ -33,7 +33,7 @@ class Client
      * @param string $method
      * @param array $post
      * @param string $accept
-     * @return Crawler
+     * @return Response
      */
     public function call($requestUri, $method='GET', array $post = array(), $accept = '')
     {
@@ -57,12 +57,12 @@ class Client
         $_POST = $postDump;
         $_COOKIE = $cookieDump;
 
-        return new Crawler(ob_get_clean());
+        return new Response(ob_get_clean());
     }
 
     /**
      * @param Crawler $link
-     * @return Crawler
+     * @return Response
      */
     public function click(Crawler $link)
     {
@@ -72,7 +72,7 @@ class Client
     /**
      * @param Crawler $form
      * @param array $values
-     * @return Crawler
+     * @return Response
      */
     public function submit(Crawler $form, array $values = array())
     {
