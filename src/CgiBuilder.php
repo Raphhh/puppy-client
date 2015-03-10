@@ -33,34 +33,52 @@ class CgiBuilder
 
     /**
      * @param array $server
+     * @return $this
      */
     public function addServer(array $server)
     {
         $this->addToCommand('server', $server);
+        return $this;
     }
 
     /**
      * @param array $get
+     * @return $this
      */
     public function addGet(array $get)
     {
         $this->addToCommand('get', $get);
+        return $this;
     }
 
     /**
      * @param array $post
+     * @return $this
      */
     public function addPost(array $post)
     {
         $this->addToCommand('post', $post);
+        return $this;
     }
 
     /**
      * @param array $cookies
+     * @return $this
      */
     public function addCookies(array $cookies)
     {
         $this->addToCommand('cookies', $cookies);
+        return $this;
+    }
+
+    /**
+     * @param array $env
+     * @return $this
+     */
+    public function addEnv(array $env)
+    {
+        $this->addToCommand('env', $env);
+        return $this;
     }
 
     /**
