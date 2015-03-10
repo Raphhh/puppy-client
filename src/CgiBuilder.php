@@ -14,11 +14,11 @@ class CgiBuilder
     private $command;
 
     /**
-     *
+     * @param $cgiPath
      */
-    public function __construct()
+    public function __construct($cgiPath)
     {
-        $this->setCommand('php-cgi '.__DIR__.'/bootstrap.php');
+        $this->setCommand($cgiPath . ' '.__DIR__.'/bootstrap.php');
     }
 
     /**

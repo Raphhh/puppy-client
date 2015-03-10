@@ -23,6 +23,11 @@ class Client
     private $baseUri;
 
     /**
+     * @var string
+     */
+    private $cgiPath;
+
+    /**
      * @var array
      */
     private $cookies = [];
@@ -30,11 +35,13 @@ class Client
     /**
      * @param string $entryPath
      * @param string $baseUri
+     * @param string $cgiPath
      */
-    public function __construct($entryPath, $baseUri = 'http://website.dev')
+    public function __construct($entryPath, $baseUri = 'http://website.dev', $cgiPath = 'php-cgi')
     {
         $this->setEntryPath($entryPath);
         $this->setBaseUri($baseUri);
+        $this->setCgiPath($cgiPath);
     }
 
     /**
@@ -55,7 +62,7 @@ class Client
         $get = [];
         parse_str(parse_url($requestUri, PHP_URL_QUERY), $get);
 
-        $cgiBuilder = new CgiBuilder();
+        $cgiBuilder = new CgiBuilder($this->getCgiPath());
         $cgiBuilder->addServer($server);
         $cgiBuilder->addGet($get);
         $cgiBuilder->addPost($post);
@@ -89,16 +96,6 @@ class Client
     }
 
     /**
-     * Getter of $baseUri
-     *
-     * @return string
-     */
-    public function getBaseUri()
-    {
-        return $this->baseUri;
-    }
-
-    /**
      * Getter of $cookies
      *
      * @return array
@@ -109,16 +106,6 @@ class Client
     }
 
     /**
-     * Getter of $entryPath
-     *
-     * @return string
-     */
-    public function getEntryPath()
-    {
-        return $this->entryPath;
-    }
-
-    /**
      * Setter of $cookies
      *
      * @param array $cookies
@@ -126,6 +113,15 @@ class Client
     public function setCookies(array $cookies)
     {
         $this->cookies = $cookies;
+    }
+    /**
+     * Getter of $entryPath
+     *
+     * @return string
+     */
+    public function getEntryPath()
+    {
+        return $this->entryPath;
     }
 
     /**
@@ -139,6 +135,16 @@ class Client
     }
 
     /**
+     * Getter of $baseUri
+     *
+     * @return string
+     */
+    public function getBaseUri()
+    {
+        return $this->baseUri;
+    }
+
+    /**
      * Setter of $baseUri
      *
      * @param string $baseUri
@@ -146,5 +152,25 @@ class Client
     public function setBaseUri($baseUri)
     {
         $this->baseUri = (string)$baseUri;
+    }
+
+    /**
+     * Getter of $cgiPath
+     *
+     * @return string
+     */
+    public function getCgiPath()
+    {
+        return $this->cgiPath;
+    }
+
+    /**
+     * Setter of $cgiPath
+     *
+     * @param string $cgiPath
+     */
+    public function setCgiPath($cgiPath)
+    {
+        $this->cgiPath = (string)$cgiPath;
     }
 }
