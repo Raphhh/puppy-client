@@ -129,7 +129,7 @@ class Client
      *
      * @param string $entryPath
      */
-    public function setEntryPath($entryPath)
+    private function setEntryPath($entryPath)
     {
         $this->entryPath = (string)$entryPath;
     }
