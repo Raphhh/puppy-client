@@ -98,7 +98,7 @@ class Response
     public function getDom()
     {
         $crawler = new Crawler(null, $this->getbaseUri());
-        $crawler->addContent($this->getContent(), 'text/html'); //todo
+        $crawler->addContent($this->getContent(), $this->getHeader('Content-type'));
         return $crawler;
     }
 
