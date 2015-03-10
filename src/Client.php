@@ -45,33 +45,18 @@ class Client
     }
 
     /**
-     * @param $requestUri
-     * @param string $method
-     * @param array $post
-     * @param string $accept
+     * @param Request $request
      * @return Response
      */
-    public function call($requestUri, $method='GET', array $post = array(), $accept = '')//todo travailler avec un objet Request
+    public function call(Request $request)
     {
-        $server = [];
-        $server['REQUEST_URI'] = $requestUri;
+        $server = $request->getServer();
         $server['SCRIPT_FILENAME'] = $this->getEntryPath();
-        $server['REQUEST_METHOD'] = strtoupper($method);
-        $server['HTTP_ACCEPT'] = $accept;
+        $request->setServer($server);
 
-        $get = [];
-        parse_str(parse_url($requestUri, PHP_URL_QUERY), $get);
-
-        $cgiBuilder = new CgiBuilder($this->getCgiPath());
-        $cgiBuilder->addServer($server);
-        $cgiBuilder->addGet($get);
-        $cgiBuilder->addPost($post);
-        $cgiBuilder->addCookies($this->getCookies());
-        $command = $cgiBuilder->getCommand();
-
+        $director = new CgiDirector(new CgiBuilder($this->getCgiPath()));
         $executor = new Executor();
-        $result = $executor->read($command);
-
+        $result = $executor->read($director->getCommand($request));
         return new Response($this, $result);
     }
 
@@ -81,7 +66,7 @@ class Client
      */
     public function click(Link $link)
     {
-        return $this->call($link->getUri());
+        return $this->call(new Request($link->getUri()));
     }
 
     /**
@@ -92,7 +77,9 @@ class Client
     public function submit(Form $form, array $values = array())
     {
         $form->setValues($values);
-        return $this->call($form->getUri(), $form->getMethod(), $form->getPhpValues());
+        $request = new Request($form->getUri(), $form->getMethod());
+        $request->setPost($form->getPhpValues());
+        return $this->call($request);
     }
 
     /**
