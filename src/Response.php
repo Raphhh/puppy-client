@@ -11,9 +11,9 @@ use Symfony\Component\DomCrawler\Crawler;
 class Response 
 {
     /**
-     * @var Client
+     * @var string
      */
-    private $client;
+    private $baseUri;
 
     /**
      * @var string
@@ -31,12 +31,12 @@ class Response
     private $content;
 
     /**
-     * @param Client $client
+     * @param string $baseUri
      * @param string $response
      */
-    public function __construct(Client $client, $response)
+    public function __construct($baseUri, $response)
     {
-        $this->setClient($client);
+        $this->setBaseUri($baseUri);
         $this->setResponse($response);
         $this->init();
     }
@@ -97,29 +97,29 @@ class Response
      */
     public function getDom()
     {
-        $crawler = new Crawler(null, $this->getClient()->getBaseUri());
+        $crawler = new Crawler(null, $this->getbaseUri());
         $crawler->addContent($this->getContent(), 'text/html'); //todo
         return $crawler;
     }
 
     /**
-     * Getter of $client
+     * Getter of $baseUri
      *
-     * @return Client
+     * @return string
      */
-    public function getClient()
+    public function getBaseUri()
     {
-        return $this->client;
+        return $this->baseUri;
     }
 
     /**
-     * Setter of $client
+     * Setter of $baseUri
      *
-     * @param Client $client
+     * @param string $baseUri
      */
-    private function setClient(Client $client)
+    private function setBaseUri($baseUri)
     {
-        $this->client = $client;
+        $this->baseUri = $baseUri;
     }
 
     /**

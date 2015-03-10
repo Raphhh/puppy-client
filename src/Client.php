@@ -57,7 +57,8 @@ class Client
         $director = new CgiDirector(new CgiBuilder($this->getCgiPath()));
         $executor = new Executor();
         $result = $executor->read($director->getCommand($request));
-        return new Response($this, $result);
+
+        return new Response($this->getBaseUri(), $result);
     }
 
     /**
