@@ -186,13 +186,9 @@ class Response
     private function initHeaders($endOfHeaders)
     {
         $headers = [];
-        foreach ($this->explodeHeaders($endOfHeaders) as $line) {
-            $headerData = explode(': ', $line);
-            if (count($headerData) === 2) {
-                $headers[trim($headerData[0])] = trim($headerData[1]);
-            } else {
-                $headers[trim($headerData[0])] = '';
-            }
+        foreach ($this->explodeHeaderBlock($endOfHeaders) as $line) {
+            $headerData = $this->explodeHeaderLine($line);
+            $headers[trim($headerData[0])] = trim($headerData[1]);
         }
         $this->setHeaders($headers);
     }
@@ -201,8 +197,17 @@ class Response
      * @param $endOfHeaders
      * @return array
      */
-    private function explodeHeaders($endOfHeaders)
+    private function explodeHeaderBlock($endOfHeaders)
     {
         return array_filter(explode("\n", substr($this->getResponse(), 0, $endOfHeaders)));
+    }
+
+    /**
+     * @param $line
+     * @return array
+     */
+    private function explodeHeaderLine($line)
+    {
+        return array_pad(explode(': ', $line), 2, '');
     }
 }
