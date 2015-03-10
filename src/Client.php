@@ -1,9 +1,9 @@
 <?php
 namespace Puppy\Client;
 
-use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 use Symfony\Component\DomCrawler\Link;
+use TRex\Cli\Executor;
 
 /**
  * Class Client
@@ -44,29 +44,28 @@ class Client
      * @param string $accept
      * @return Response
      */
-    public function call($requestUri, $method='GET', array $post = array(), $accept = '')
+    public function call($requestUri, $method='GET', array $post = array(), $accept = '')//todo travailler avec un objet Request
     {
-        $serverDump = $_SERVER;
-        $getDump = $_GET;
-        $postDump = $_POST;
-        $cookieDump = $_COOKIE;
+        $server = [];
+        $server['REQUEST_URI'] = $requestUri;
+        $server['SCRIPT_FILENAME'] = $this->getEntryPath();
+        $server['REQUEST_METHOD'] = strtoupper($method);
+        $server['HTTP_ACCEPT'] = $accept;
 
-        $_SERVER['REQUEST_URI'] = $requestUri;
-        $_SERVER['REQUEST_METHOD'] = strtoupper($method);
-        $_SERVER['HTTP_ACCEPT'] = $accept;
-        parse_str(parse_url($requestUri, PHP_URL_QUERY), $_GET);
-        $_POST = $post;
-        $_COOKIE = $this->getCookies();
+        $get = [];
+        parse_str(parse_url($requestUri, PHP_URL_QUERY), $get);
 
-        ob_start();
-        require $this->getEntryPath();
+        $cgiBuilder = new CgiBuilder();
+        $cgiBuilder->addServer($server);
+        $cgiBuilder->addGet($get);
+        $cgiBuilder->addPost($post);
+        $cgiBuilder->addCookies($this->getCookies());
+        $command = $cgiBuilder->getCommand();
 
-        $_SERVER = $serverDump;
-        $_GET = $getDump;
-        $_POST = $postDump;
-        $_COOKIE = $cookieDump;
+        $executor = new Executor();
+        $result = $executor->read($command);
 
-        return new Response($this, ob_get_clean());
+        return new Response($this, $result);
     }
 
     /**
@@ -90,16 +89,6 @@ class Client
     }
 
     /**
-     * Getter of $entryPath
-     *
-     * @return string
-     */
-    public function getEntryPath()
-    {
-        return $this->entryPath;
-    }
-
-    /**
      * Getter of $baseUri
      *
      * @return string
@@ -120,6 +109,16 @@ class Client
     }
 
     /**
+     * Getter of $entryPath
+     *
+     * @return string
+     */
+    public function getEntryPath()
+    {
+        return $this->entryPath;
+    }
+
+    /**
      * Setter of $cookies
      *
      * @param array $cookies
@@ -134,7 +133,7 @@ class Client
      *
      * @param string $entryPath
      */
-    private function setEntryPath($entryPath)
+    public function setEntryPath($entryPath)
     {
         $this->entryPath = (string)$entryPath;
     }
@@ -144,7 +143,7 @@ class Client
      *
      * @param string $baseUri
      */
-    private function setBaseUri($baseUri)
+    public function setBaseUri($baseUri)
     {
         $this->baseUri = (string)$baseUri;
     }

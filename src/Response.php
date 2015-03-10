@@ -18,16 +18,68 @@ class Response
     /**
      * @var string
      */
+    private $response;
+
+    /**
+     * @var array
+     */
+    private $headers;
+
+    /**
+     * @var string
+     */
     private $content;
 
     /**
      * @param Client $client
-     * @param string $content
+     * @param string $response
      */
-    public function __construct(Client $client, $content)
+    public function __construct(Client $client, $response)
     {
         $this->setClient($client);
-        $this->setContent($content);
+        $this->setResponse($response);
+        $this->init();
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getResponse();
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        return (int)$this->getHeader('Status');
+    }
+
+    /**
+     * Getter of $headers
+     *
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
+
+    /**
+     * Getter of $headers
+     *
+     * @param string $key
+     * @return array
+     */
+    public function getHeader($key)
+    {
+        if (isset($this->headers[$key])) {
+            return $this->headers[$key];
+        }
+        return '';
     }
 
     /**
@@ -71,6 +123,16 @@ class Response
     }
 
     /**
+     * Setter of $headers
+     *
+     * @param array $headers
+     */
+    private function setHeaders(array $headers)
+    {
+        $this->headers = $headers;
+    }
+
+    /**
      * Setter of $content
      *
      * @param string $content
@@ -78,5 +140,69 @@ class Response
     private function setContent($content)
     {
         $this->content = (string)$content;
+    }
+
+    /**
+     * Getter of $response
+     *
+     * @return string
+     */
+    private function getResponse()
+    {
+        return $this->response;
+    }
+
+    /**
+     * Setter of $response
+     *
+     * @param string $response
+     */
+    private function setResponse($response)
+    {
+        $this->response = (string)$response;
+    }
+
+    /**
+     *
+     */
+    private function init()
+    {
+        $endOfHeaders = strpos($this->getResponse(), "\n\n");
+        $this->initHeaders($endOfHeaders);
+        $this->initContent($endOfHeaders);
+    }
+
+    /**
+     * @param $endOfHeaders
+     */
+    private function initContent($endOfHeaders)
+    {
+        $this->setContent(trim(substr($this->getResponse(), $endOfHeaders)));
+    }
+
+    /**
+     * @param $endOfHeaders
+     */
+    private function initHeaders($endOfHeaders)
+    {
+        $headers = [];
+        foreach ($this->explodeHeaders($endOfHeaders) as $line) {
+            $headerData = explode(': ', $line);
+            if (count($headerData) === 2) {
+                $headers[trim($headerData[0])] = trim($headerData[1]);
+            } else {
+                $headers[trim($headerData[0])] = '';
+            }
+        }
+        $this->setHeaders($headers);
+    }
+
+    /**
+     * @param $endOfHeaders
+     * @return array
+     */
+    private function explodeHeaders($endOfHeaders)
+    {
+        return array_filter(explode("\n", substr($this->getResponse(), 0, $endOfHeaders)));
     }
 }

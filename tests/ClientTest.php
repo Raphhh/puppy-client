@@ -1,6 +1,11 @@
 <?php
 namespace Puppy\Client;
 
+/**
+ * Class ClientTest
+ * @package Puppy\Client
+ * @author Raphaël Lefebvre <raphael@raphaellefebvre.be>
+ */
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
     public function testCallWithRequestUri()
@@ -68,5 +73,27 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $response = $client->call('submit');
         $form = $response->getDom()->selectButton('submit')->form();
         $this->assertSame('value', $client->submit($form, ['key' => 'value'])->getContent());
+    }
+
+    public function testCallWithResponse()
+    {
+        $client = new Client(__DIR__ . '/index.php');
+        $response = $client->call('response');
+        $this->assertSame('response content', $response->getContent());
+    }
+
+    public function testCallWithResponseStatusCode()
+    {
+        $client = new Client(__DIR__ . '/index.php');
+        $response = $client->call('response');
+        $this->assertSame(201, $response->getStatusCode());
+    }
+
+    public function testCallWithResponseHeaders()
+    {
+        $client = new Client(__DIR__ . '/index.php');
+        $response = $client->call('response');
+        $this->assertSame('201 Created', $response->getHeader('Status'));
+        $this->assertSame('12', $response->getHeader('Age'));
     }
 }

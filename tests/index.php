@@ -1,6 +1,9 @@
 <?php
 use Puppy\Application;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+@include_once __DIR__.'/../vendor/autoload.php';
 
 $puppy = new Application(new ArrayObject(), Request::createFromGlobals());
 
@@ -55,6 +58,13 @@ $puppy->any(
                         <input type="submit" name="submit" value="submit">
                     </form>
                 </div>';
+    }
+);
+
+$puppy->any(
+    'response',
+    function(){
+        return new Response('response content', 201, ['Age' => '12']);
     }
 );
 
