@@ -26,6 +26,11 @@ class Response
     private $headers;
 
     /**
+     * @var array
+     */
+    private $cookies = [];
+
+    /**
      * @var string
      */
     private $content;
@@ -100,6 +105,16 @@ class Response
         $crawler = new Crawler(null, $this->getbaseUri());
         $crawler->addContent($this->getContent(), $this->getHeader('Content-type'));
         return $crawler;
+    }
+
+    /**
+     * Getter of $cookies
+     *
+     * @return array
+     */
+    public function getCookies()
+    {
+        return $this->cookies;
     }
 
     /**
@@ -189,12 +204,19 @@ class Response
     {
         $headers = [];
         foreach ($this->explodeHeaderBlock($endOfHeaders) as $line) {
+
             $headerData = $this->explodeHeaderLine($line);
             $key = trim($headerData[0]);
+            $value = trim($headerData[1]);
+
+            if($key === 'Set-Cookie'){
+                $this->addCookie($this->parseCookieValue($value));
+            }
+
             if(isset($headers[$key])){
-                $headers[$key] .= ', ' . trim($headerData[1]);
+                $headers[$key] .= ', ' . $value;
             }else {
-                $headers[$key] = trim($headerData[1]);
+                $headers[$key] = $value;
             }
         }
         $this->setHeaders($headers);
@@ -216,5 +238,23 @@ class Response
     private function explodeHeaderLine($line)
     {
         return array_pad(explode(': ', $line), 2, '');
+    }
+
+    /**
+     * @param string $value
+     * @return array
+     */
+    private function parseCookieValue($value)
+    {
+        $cookieData = explode('=', explode(';', $value)[0]);
+        return [$cookieData[0] => $cookieData[1]];
+    }
+
+    /**
+     * @param array $cookie
+     */
+    private function addCookie(array $cookie)
+    {
+        $this->cookies = array_merge($this->cookies, $cookie);
     }
 }
