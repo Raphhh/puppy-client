@@ -127,9 +127,9 @@ class Request
      */
     public function getGet()
     {
-        $get = $this->get;
+        $get = [];
         parse_str(parse_url($this->getRequestUri(), PHP_URL_QUERY), $get);
-        return $get;
+        return array_merge($get, $this->get);
     }
 
     /**

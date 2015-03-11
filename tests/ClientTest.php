@@ -8,6 +8,8 @@ namespace Puppy\Client;
  */
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
+    private $dummyValue = "&|/\\éëèê€ '\"´`^";
+
     public function testCallWithRequestUri()
     {
         $client = new Client(__DIR__ . '/index.php');
@@ -29,20 +31,56 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('POST', $response->getContent());
     }
 
+    public function testCallWithGetValuesInTheRequestUri()
+    {
+        $client = new Client(__DIR__ . '/index.php');
+        $response = $client->call(new Request('get?key='.$this->getDummyValue(true)));
+        $this->assertSame($this->getDummyValue(false), $response->getContent());
+    }
+
+    public function testCallWithAdditionalGetValues()
+    {
+        $client = new Client(__DIR__ . '/index.php');
+        $request = new Request('get?key=value');
+        $request->setGet(['key' => $this->getDummyValue(false)]);
+        $response = $client->call($request);
+        $this->assertSame($this->getDummyValue(false), $response->getContent());
+    }
+
     public function testCallWithPostValues()
     {
         $client = new Client(__DIR__ . '/index.php');
         $request = new Request('post', 'POST');
-        $request->setPost(['key' => 'value']);
+        $request->setPost(['key' => $this->getDummyValue(false)]);
         $response = $client->call($request);
-        $this->assertSame('value', $response->getContent());
+        $this->assertSame($this->getDummyValue(false), $response->getContent());
     }
 
-    public function testCallWithGetValues()
+    public function testCallWithServerValues()
     {
         $client = new Client(__DIR__ . '/index.php');
-        $response = $client->call(new Request('post?key=value'));
-        $this->assertSame('value', $response->getContent());
+        $request = new Request('server');
+        $request->setServer(['key' => $this->getDummyValue(false)]);
+        $response = $client->call($request);
+        $this->assertSame($this->getDummyValue(false), $response->getContent());
+    }
+
+    public function testCallWithCookieValues()
+    {
+        $client = new Client(__DIR__ . '/index.php');
+        $request = new Request('cookie');
+        $request->setCookies(['key' => $this->getDummyValue(false)]);
+        $response = $client->call($request);
+        $this->assertSame($this->getDummyValue(false), $response->getContent());
+    }
+
+    public function testCallWithEnvValues()
+    {
+        $client = new Client(__DIR__ . '/index.php');
+        $request = new Request('env');
+        $request->setEnv(['key' => $this->getDummyValue(false)]);
+        $response = $client->call($request);
+        $this->assertSame($this->getDummyValue(false), $response->getContent());
     }
 
     public function testCallWithDefaultType()
@@ -97,5 +135,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $response = $client->call(new Request('response'));
         $this->assertSame('201 Created', $response->getHeader('Status'));
         $this->assertSame('12', $response->getHeader('Age'));
+    }
+
+    private function getDummyValue($isEncoded)
+    {
+        if($isEncoded){
+            return urlencode($this->dummyValue);
+        }
+        return $this->dummyValue;
     }
 }

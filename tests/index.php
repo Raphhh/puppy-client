@@ -22,9 +22,37 @@ $puppy->any(
 );
 
 $puppy->any(
+    'get',
+    function(){
+        return $_GET['key'];
+    }
+);
+
+$puppy->any(
     'post',
-    function(Request $request){
-        return $request->get('key');
+    function(){
+        return $_POST['key'];
+    }
+);
+
+$puppy->any(
+    'server',
+    function(){
+        return $_SERVER['key'];
+    }
+);
+
+$puppy->any(
+    'cookie',
+    function(){
+        return $_COOKIE['key'];
+    }
+);
+
+$puppy->any(
+    'env',
+    function(){
+        return $_ENV['key'];
     }
 );
 
