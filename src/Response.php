@@ -117,6 +117,20 @@ class Response
     }
 
     /**
+     * Getter of $cookies
+     *
+     * @param string $key
+     * @return array
+     */
+    public function getCookie($key)
+    {
+        if (isset($this->cookies[$key])) {
+            return $this->cookies[$key];
+        }
+        return '';
+    }
+
+    /**
      * Getter of $baseUri
      *
      * @return string
