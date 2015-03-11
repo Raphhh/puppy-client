@@ -181,6 +181,8 @@ class Response
     }
 
     /**
+     * http://stackoverflow.com/questions/3241326/set-more-than-one-http-header-with-the-same-name
+     *
      * @param $endOfHeaders
      */
     private function initHeaders($endOfHeaders)
@@ -188,7 +190,12 @@ class Response
         $headers = [];
         foreach ($this->explodeHeaderBlock($endOfHeaders) as $line) {
             $headerData = $this->explodeHeaderLine($line);
-            $headers[trim($headerData[0])] = trim($headerData[1]);
+            $key = trim($headerData[0]);
+            if(isset($headers[$key])){
+                $headers[$key] .= ', ' . trim($headerData[1]);
+            }else {
+                $headers[$key] = trim($headerData[1]);
+            }
         }
         $this->setHeaders($headers);
     }
