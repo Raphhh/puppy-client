@@ -1,6 +1,8 @@
 <?php
 namespace Puppy\Client;
 
+use Puppy\Client\CGI\CommandBuilder;
+use Puppy\Client\Cgi\CommandDirector;
 use Symfony\Component\DomCrawler\Form;
 use Symfony\Component\DomCrawler\Link;
 use TRex\Cli\Executor;
@@ -54,7 +56,7 @@ class Client
         $server['SCRIPT_FILENAME'] = $this->getEntryPath();
         $request->setServer($server);
 
-        $director = new CgiDirector(new CgiBuilder($this->getCgiPath()));
+        $director = new CommandDirector(new CommandBuilder($this->getCgiPath()));
         $executor = new Executor();
         $result = $executor->read($director->getCommand($request));
 

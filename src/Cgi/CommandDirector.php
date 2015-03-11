@@ -1,22 +1,24 @@
 <?php
-namespace Puppy\Client;
+namespace Puppy\Client\Cgi;
+
+use Puppy\Client\Request;
 
 /**
- * Class CgiDirector
+ * Class CommandDirector
  * @package Puppy\Client
  * @author Raphaël Lefebvre <raphael@raphaellefebvre.be>
  */
-class CgiDirector 
+class CommandDirector
 {
     /**
-     * @var CgiBuilder
+     * @var CommandBuilder
      */
     private $builder;
 
     /**
-     * @param CgiBuilder $builder
+     * @param CommandBuilder $builder
      */
-    public function __construct(CgiBuilder $builder)
+    public function __construct(CommandBuilder $builder)
     {
         $this->setBuilder($builder);
     }
@@ -40,7 +42,7 @@ class CgiDirector
     /**
      * Getter of $builder
      *
-     * @return CgiBuilder
+     * @return CommandBuilder
      */
     private function getBuilder()
     {
@@ -50,9 +52,9 @@ class CgiDirector
     /**
      * Setter of $builder
      *
-     * @param CgiBuilder $builder
+     * @param CommandBuilder $builder
      */
-    private function setBuilder(CgiBuilder $builder)
+    private function setBuilder(CommandBuilder $builder)
     {
         $this->builder = $builder;
     }

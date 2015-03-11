@@ -1,12 +1,12 @@
 <?php
-namespace Puppy\Client;
+namespace Puppy\Client\CGI;
 
 /**
- * Class CgiBuilder
+ * Class CommandBuilder
  * @package Puppy\Client
  * @author Raphaël Lefebvre <raphael@raphaellefebvre.be>
  */
-class CgiBuilder 
+class CommandBuilder
 {
     /**
      * @var string
@@ -18,7 +18,7 @@ class CgiBuilder
      */
     public function __construct($cgiPath)
     {
-        $this->setCommand($cgiPath . ' '.__DIR__.'/bootstrap.php');
+        $this->setCommand($cgiPath . ' '.__DIR__.'/../bootstrap.php');
     }
 
     /**
