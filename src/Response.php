@@ -72,7 +72,6 @@ class Response
         return $this->headers;
     }
 
-
     /**
      * Getter of $headers
      *
