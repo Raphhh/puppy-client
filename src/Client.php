@@ -29,11 +29,6 @@ class Client
     private $cgiPath;
 
     /**
-     * @var array
-     */
-    private $cookies = [];
-
-    /**
      * @param string $entryPath
      * @param string $baseUri
      * @param string $cgiPath
@@ -81,25 +76,6 @@ class Client
         return $this->call($request);
     }
 
-    /**
-     * Getter of $cookies
-     *
-     * @return array
-     */
-    public function getCookies()
-    {
-        return $this->cookies;
-    }
-
-    /**
-     * Setter of $cookies
-     *
-     * @param array $cookies
-     */
-    public function setCookies(array $cookies)
-    {
-        $this->cookies = $cookies;
-    }
     /**
      * Getter of $entryPath
      *
