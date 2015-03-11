@@ -190,9 +190,9 @@ class Request
     public function getServer()
     {
         $server = $this->server;
-        $server['REQUEST_URI'] = $this->getRequestUri();
-        $server['REQUEST_METHOD'] = $this->getMethod();
-        $server['HTTP_ACCEPT'] = $this->getAcceptedType();
+        $server = $this->setMandatoryKey($server, 'REQUEST_URI', $this->getRequestUri());
+        $server = $this->setOptionalKey($server, 'REQUEST_METHOD', $this->getMethod());
+        $server = $this->setOptionalKey($server, 'HTTP_ACCEPT', $this->getAcceptedType());
 
         return $server;
     }
@@ -225,5 +225,31 @@ class Request
     public function setEnv(array $env)
     {
         $this->env = $env;
+    }
+
+    /**
+     * @param array $vars
+     * @param $key
+     * @param $value
+     * @return mixed
+     */
+    private function setMandatoryKey(array $vars, $key, $value)
+    {
+        $vars[$key] = $value;
+        return $vars;
+    }
+
+    /**
+     * @param array $vars
+     * @param $key
+     * @param $value
+     * @return mixed
+     */
+    private function setOptionalKey(array $vars, $key, $value)
+    {
+        if ($value) {
+            $vars[$key] = $value;
+        }
+        return $vars;
     }
 }
