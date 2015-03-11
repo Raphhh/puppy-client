@@ -8,7 +8,7 @@ namespace Puppy\Client;
  */
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
-    private $dummyValue = "&|/\\éëèê€ '\"´`^";
+    private $dummyValue = "&|/\\éëèê€ '\"´`^"; //todo eof bugging
 
     public function testCallWithRequestUri()
     {
