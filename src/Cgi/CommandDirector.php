@@ -31,10 +31,10 @@ class CommandDirector
     {
         $this->getBuilder()
             ->addServer($request->getServer())
-            ->addGet($request->getGet())
-            ->addPost($request->getPost())
-            ->addCookies($request->getCookies())
-            ->addEnv($request->getEnv());
+            ->addEnv($request->getEnv())
+            ->addGet($request->getRequestUri(), $request->getGet())
+            ->addPost($request->getMethod(), 'application/x-www-form-urlencoded', $request->getPost()) //todo
+            ->addCookies($request->getCookies());
 
         return $this->getBuilder()->getCommand();
     }

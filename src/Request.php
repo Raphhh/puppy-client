@@ -26,27 +26,32 @@ class Request
     /**
      * @var array
      */
-    private $get = array();
+    private $get = [];
 
     /**
      * @var array
      */
-    private $post = array();
+    private $post = [];
 
     /**
      * @var array
      */
-    private $cookies = array();
+    private $cookies = [];
 
     /**
      * @var array
      */
-    private $server = array();
+    private $server = [
+        'SERVER_PROTOCOL' => 'HTTP/1.1',
+        'REDIRECT_STATUS' => '200',
+        'REQUEST_METHOD' => 'GET',
+        'GATEWAY_INTERFACE' => 'CGI/1.1',
+    ];
 
     /**
      * @var array
      */
-    private $env = array();
+    private $env = [];
 
     /**
      * @param string $requestUri
@@ -190,7 +195,6 @@ class Request
     public function getServer()
     {
         $server = $this->server;
-        $server = $this->setMandatoryKey($server, 'REQUEST_URI', $this->getRequestUri());
         $server = $this->setOptionalKey($server, 'REQUEST_METHOD', $this->getMethod());
         $server = $this->setOptionalKey($server, 'HTTP_ACCEPT', $this->getAcceptedType());
 
@@ -225,18 +229,6 @@ class Request
     public function setEnv(array $env)
     {
         $this->env = $env;
-    }
-
-    /**
-     * @param array $vars
-     * @param $key
-     * @param $value
-     * @return mixed
-     */
-    private function setMandatoryKey(array $vars, $key, $value)
-    {
-        $vars[$key] = $value;
-        return $vars;
     }
 
     /**

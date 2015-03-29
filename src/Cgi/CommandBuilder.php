@@ -11,14 +11,18 @@ class CommandBuilder
     /**
      * @var string
      */
-    private $command;
+    private $commandParts = [
+        'post' => '',
+        'globals' => [],
+        'cgi' => '',
+    ];
 
     /**
      * @param $cgiPath
      */
     public function __construct($cgiPath)
     {
-        $this->setCommand($cgiPath . ' '.__DIR__.'/../bootstrap.php');
+        $this->setCgiPath($cgiPath);
     }
 
     /**
@@ -28,7 +32,7 @@ class CommandBuilder
      */
     public function getCommand()
     {
-        return $this->command;
+        return $this->flat(array_filter($this->commandParts));
     }
 
     /**
@@ -37,27 +41,42 @@ class CommandBuilder
      */
     public function addServer(array $server)
     {
-        $this->addToCommand('server', $server);
+        $this->addToGlobals($server);
         return $this;
     }
 
     /**
+     * @param string$requestUri
      * @param array $get
      * @return $this
      */
-    public function addGet(array $get)
+    public function addGet($requestUri, array $get)
     {
-        $this->addToCommand('get', $get);
+        $query = $this->buildQuery($get);
+        $this->addToGlobals([
+            'REQUEST_URI' => rtrim($requestUri . '?' . $query, '?'),
+            'QUERY_STRING' => $query,
+        ]);
         return $this;
     }
 
     /**
+     * @param $method
+     * @param string $contentType
      * @param array $post
      * @return $this
      */
-    public function addPost(array $post)
+    public function addPost($method, $contentType, array $post)
     {
-        $this->addToCommand('post', $post);
+        if($method === 'POST' && $post) {
+            $data = $this->buildQuery($post);
+            $this->commandParts['post'] = 'echo ' . $data . ' |';
+            $this->addToGlobals([
+                'REQUEST_METHOD' => $method,
+                'CONTENT_TYPE' => $contentType,
+                'CONTENT_LENGTH' => strlen($data),
+            ]);
+        }
         return $this;
     }
 
@@ -67,7 +86,9 @@ class CommandBuilder
      */
     public function addCookies(array $cookies)
     {
-        $this->addToCommand('cookies', $cookies);
+        if($cookies) {
+            $this->addToGlobals(['HTTP_COOKIE' => $this->buildQuery($cookies)]);
+        }
         return $this;
     }
 
@@ -77,24 +98,51 @@ class CommandBuilder
      */
     public function addEnv(array $env)
     {
-        $this->addToCommand('env', $env);
+        $this->addToGlobals($env);
         return $this;
     }
 
     /**
-     * @param $key
-     * @param $arg
+     * @param string $cgiPath
      */
-    private function addToCommand($key, $arg)
+    private function setCgiPath($cgiPath)
     {
-        $this->command .= ' '.$key.'='.base64_encode(serialize($arg));
+        $this->commandParts['cgi'] = $cgiPath;
     }
 
     /**
-     * @param $command
+     * @param array $globals
      */
-    private function setCommand($command)
+    private function addToGlobals(array $globals)
     {
-        $this->command = $command;
+        foreach(array_filter($globals) as $key => $value){
+            $this->commandParts['globals'][$key] = $key . '=' . $value;
+        }
+    }
+
+    /**
+     * @param array $data
+     * @return string
+     */
+    private function buildQuery(array $data)
+    {
+        $result = '';
+        foreach($data as $key => $value){
+            $result .= "&$key=$value";
+        }
+        return urlencode(ltrim($result, '&'));
+    }
+
+    /**
+     * @param array $data
+     * @return string
+     */
+    private function flat(array $data){
+        foreach($data as $key => $value){
+            if(is_array($value)){
+                $data[$key] = $this->flat($value);
+            }
+        }
+        return implode(' ', $data);
     }
 }

@@ -39,9 +39,10 @@ class Call
      */
     public function execute(Request $request)
     {
+        $command = $this->buildCommand($request);
         return new Response(
             $this->getClient()->getBaseUri(),
-            $this->getExecutor()->read($this->buildCommand($request))
+            $this->getExecutor()->read($command)
         );
     }
 
