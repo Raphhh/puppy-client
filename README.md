@@ -8,33 +8,3 @@
 [![License](https://poser.pugx.org/raphhh/puppy-client/license.svg)](https://packagist.org/packages/raphhh/puppy-client)
 
 Client to test [puppy](https://github.com/Raphhh/puppy).
-
-Example:
-
-
-## Call
-
-```php
-$client = new Client('public/index.php');
-$dom = $client->call('contact');
-```
-
-## Click
-
-```php
-$client = new Client('public/index.php');
-$dom = $client->call('contact');
-
-$link = $dom->find('a')->eq(0)
-$result = $client->click($link);
-```
-
-## Submit
-
-```php
-$client = new Client('public/index.php');
-$dom = $client->call('contact');
-
-$form = $dom->find('form')->eq(0)
-$result = $client->submit($form);
-```
