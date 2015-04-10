@@ -44,8 +44,10 @@ class Client
         $_SERVER['REQUEST_METHOD'] = $method;
         $_POST = $post;
 
-        $cwd = getcwd();
-        chdir($this->getCwd());
+        if($this->getCwd()) {
+            $cwd = getcwd();
+            chdir($this->getCwd());
+        }
 
         $puppy = new Application(new Config($this->getEnv()), Request::createFromGlobals());
         $puppy->initModules((new ModuleFactory())->createFromApplication($puppy));
@@ -55,7 +57,9 @@ class Client
         unset($_SERVER['REQUEST_METHOD']);
         $_POST = [];
 
-        chdir($cwd);
+        if(isset($cwd)){
+            chdir($cwd);
+        }
 
         return $puppy;
     }
