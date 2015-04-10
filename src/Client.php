@@ -17,13 +17,19 @@ class Client
      * @var string
      */
     private $env;
+    /**
+     * @var string
+     */
+    private $cwd;
 
     /**
      * @param string $env
+     * @param string $cwd
      */
-    public function __construct($env='test')
+    public function __construct($env = 'test', $cwd = '')
     {
         $this->setEnv($env);
+        $this->setCwd($cwd);
     }
 
     /**
@@ -39,7 +45,7 @@ class Client
         $_POST = $post;
 
         $cwd = getcwd();
-        chdir(dirname(dirname(__DIR__)));
+        chdir($this->getCwd());
 
         $puppy = new Application(new Config($this->getEnv()), Request::createFromGlobals());
         $puppy->initModules((new ModuleFactory())->createFromApplication($puppy));
@@ -72,5 +78,25 @@ class Client
     public function setEnv($env)
     {
         $this->env = (string)$env;
+    }
+
+    /**
+     * Getter of $cwd
+     *
+     * @return string
+     */
+    public function getCwd()
+    {
+        return $this->cwd;
+    }
+
+    /**
+     * Setter of $cwd
+     *
+     * @param string $cwd
+     */
+    public function setCwd($cwd)
+    {
+        $this->cwd = (string)$cwd;
     }
 }
