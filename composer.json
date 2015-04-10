@@ -14,9 +14,9 @@
     "require": {
         "php": ">=5.4",
         "raphhh/puppy-application": "@dev",
-        "phpunit/phpunit": "@stable"
+        "raphhh/puppy-config": "@dev"
     },
     "require-dev": {
-
+        "phpunit/phpunit": "@stable"
     }
 }
